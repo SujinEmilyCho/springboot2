@@ -1,11 +1,15 @@
 package com.jojoldu.book.springboot.service.posts;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
 import com.jojoldu.book.springboot.domain.posts.Posts;
 import com.jojoldu.book.springboot.domain.posts.PostsRepository;
+import com.jojoldu.book.springboot.web.dto.PostListResponseDto;
 import com.jojoldu.book.springboot.web.dto.PostsResponseDto;
 import com.jojoldu.book.springboot.web.dto.PostsSaveRequestDto;
 import com.jojoldu.book.springboot.web.dto.PostsUpdateRequestDto;
@@ -34,5 +38,16 @@ public class PostsService {
             .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id = " + id));
         posts.update(requestDto.getTitle(), requestDto.getContent());
         return id;
+    }
+
+    @Transactional
+    public List<PostListResponseDto> findAllDesc() {
+        return postsRepository.findAllDesc().stream()
+            .map(PostListResponseDto::new)
+            .collect(Collectors.toList());
+    }
+
+    public void delete(Long id) {
+        postsRepository.deleteById(id);
     }
 }
